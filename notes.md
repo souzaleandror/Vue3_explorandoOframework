@@ -616,3 +616,215 @@ Eventos e props
 [08:10] E agora o formulário, por sua vez, precisa passar essa tarefa adiante, para alguém que vai controlar a lista. Não é responsabilidade do formulário controlar essa lista. Ele sabe quando uma tarefa foi finalizada e ponto. Essa é a responsabilidade dele.
 
 [08:28] Então temos que começar a pensar agora em para onde essa tarefa vai, como vamos identificá-la e aonde vamos armazená-la. Precisamos começar a trabalhar com listas.
+
+##### 03/02/2024
+
+@03-Trabalhando com listas
+
+@@01
+Projeto da aula anterior
+
+Caso queira começar daqui, você pode baixar o projeto da aula anterior nesse link.
+
+https://github.com/alura-cursos/alura-tracker/tree/aula-2
+
+@@02
+Completando uma tarefa
+
+[00:00] Agora que nosso formulário já está pronto para enviar uma tarefa nova, o que precisamos é deixar o nosso HMTL, nosso template, nossa marcação pronta para receber essa lista de tarefas.
+[00:15] Vamos entrar no nosso “App.vue”, e onde nós deixamos um espaço reservado queremos de alguma forma ter uma lista de tarefas. E dentro dessa lista, dessa div, nós queremos várias tarefas.
+
+[00:35] Precisamos de um componente que represente uma tarefa. Então vamos começar a criar esse componente novo. Vou criar um novo arquivo chamar “Tarefa.vue”.
+
+[00:51] Já podemos ir para o nosso template. Dentro desse componente teremos uma div que terá um box, que é uma classe do Bulma. Ela vai ter uma cor, um sombreamento.
+
+[01:09] Além disso, vou pegar da documentação que eu tenho e trazer para o Vue. Eu quero que tudo dentro desse box tenha negrito, então coloco has-text-weight-bold, ou seja, tudo ali dentro terá o texto mais forte. E logo em seguida podemos dividir em duas colunas, então usamos o <dic class="columns">.
+
+[01:32] A coluna da esquerda vamos fazer com um espaço maior para a descrição do que para o temporizador, <div class="column is -7">. Dentro dessa div vai ser a descrição da tarefa. E na outra coluna precisamos colocar aquele formato de tempo decorrido, <div class="column">. Só que já temos um componente pronto para isso, que é o que vamos inserir, <Cronometro />.
+
+[02:13] Vamos fazer agora o import do Cronometro: <script lang=”ts”> import { defineComponent } from ‘vue’.
+
+[02:36] E depois vamos fazer export default, que é o resultado da função defineComponent que recebe o nosso objeto de configuração. E já vamos dizer que o nome desse componente será “Tarefa”: export default defineComponent ( { name: ‘Tarefa’ } ).
+
+[02:57] Agora já temos a base pronta. Está faltando importar o cronômetro. Vamos fazer import Cronometro from ‘./Cronometro.vue’. E também falta adicioná-lo à lista de componentes, então componentes: { Cronometro }.
+
+[03:23] Temos a descrição da tarefa e o cronômetro. Lembrando que o cronômetro recebe uma propriedade, que é a tempoEmSegundos, que inicialmente será de 15 segundos, por exemplo, .
+
+[03:41] Vamos salvar. E agora no “App.vue” vamos importar o Tarefa. Vamos adicionar na nossa lista de componentes. E agora sim devemos ter alguma lista de tarefas já pronta. Vamos ver como isso ficou.
+
+[04:02] Repara que ele já trouxe uma lista, com tudo funcionando como queríamos, com o texto em bold, usando já o cronômetro para formatar o tempo decorrido.
+
+[04:11] Agora vamos voltar na nossa lista. Temos nossa classe lista e vamos colocar um padding para ficar um espaçamento um pouco mais agradável.
+
+[04:29] Estamos recebendo uma notificação de erro no console do navegador de que ele esperava um número e nós passamos uma string. Depois nós resolvemos isso.
+
+[04:34] Agora a última coisa que está faltando é adicionar uma cor de fundo para o nosso box que representa uma tarefa. Eu vou pegar o código hexadecimal da cor que eu coloquei na minha cola. E no nosso “Tarefa.vue” vamos criar a nossa tag de estilo.
+
+[04:56] Lembra que quando dizemos que esse estilo é escopado nós estamos dizendo que ele só será aplicado nesse componente específico, ou para os filhos dele. Queremos que o nosso box tenha um background do hexadecimal que eu peguei, que é o #FAF0CA, <style scoped> .box {background: #FAF0CA;} </style>.
+
+[05:20] Agora ficou do jeito que precisávamos. Só que ela ainda é uma lista estática. O que queremos é que quando o usuário digitar uma tarefa aqui no campo de texto, por exemplo, “Executando a limpeza do HD” vai lá e dá um “Play” e quando ele finalizar queremos que essa tarefa vire uma tarefa dentro dessa lista.
+
+[05:41] Então vamos agora fechar a comunicação entre o nosso formulário e o nosso App para fazer essa lista se tornar viva e dinâmica.
+
+@@03
+Trabalhando com listas
+
+[00:00] Agora vamos trazer dinamismo e vida para essa lista de tarefas. Não queremos nada estático desse jeito. O que queremos é linkar uma tarefa finalizada com essa lista de tarefas que será exibida na parte de baixo.
+[00:14] De volta ao nosso código, podemos começar criando uma interface que vai representar o que é uma tarefa. Vou criar uma nova pasta chamada “interfaces”, e dentro teremos uma interface “I”, que representa uma tarefa, então “ITarefa.ts”.
+
+[00:39] Agora vamos criar essa interface que vai representar uma tarefa executada. Vamos exportá-la por padrão: export default interface ITarefa. O que representa uma tarefa?
+
+[00:55] Teremos uma duração em segundos que será numérico: duracaoEmSegundos: number,. E também teremos uma descrição que será um texto: descricao: string.
+
+[01:10] O que queremos agora é que nosso “App.vue” tenha uma lista de tarefas. Já sabemos como definir o estado do componente, que é com o método data, que retorna um objeto, e queremos uma lista de tarefas. Essa é uma lista bem específica, que é um array de tarefas, tarefas: [] as ITarefa[].
+
+[01:38] Agora está faltando importar: import ITarefa from ‘./interfaces/ITarefa’. Agora sim ele está importando o que precisamos.
+
+[02:13] O que precisamos agora é que toda vez que um formulário finalizar uma tarefa ela seja salva na lista. Então vamos criar o método que salva uma tarefa: methods: { salvarTarefa }.
+
+[02:30] Ele vai receber uma tarefa por parâmetro, que é a tarefa que queremos salvar: methods: { salvarTarefa (tarefa: ITarefa) { } }. E o que queremos é adicionar no nosso estado, então this.tarefas.push(tarefa).
+
+[03:01] Agora precisamos linkar esse método com o evento do formulário. Então nosso formulário terá um <Formulario @aoSalvarTarefa=”salvarTarefa”/>, queremos que quando a tarefa for salva, queremos executar esse método salvartarefa. Vou salvar, mas esse evento ainda não implementamos aoSalvarTarefa. Então vamos no nosso formulário,“Components > Formulario.vue”.
+
+[03:29] Já na largada vamos dizer que ele emite esse evento, então emits: [‘aoSalvarTarefa’],. É uma array de string de texto com os nomes dos eventos que ele emite. E vamos emitir this.$emit o primeiro parâmetro é o nome do evento e o segundo é o que estamos enviando. Estamos enviando uma tarefa, então precisamos enviar a duração em segundos, que é o “tempoDecorrido”, e ela também terá uma descrição, que está linkada no input:
+
+[04:15] Agora, quando alguém salvar uma tarefa o nosso formulário vai emitir um evento, o app vai ouvir esse evento e adicionar na lista de tarefas. O que está faltando agora?
+
+[04:29] Agora não queremos uma tarefa estática, e sim uma lista dinâmica, que vai crescer conforme a lista de tarefas vai crescendo.
+
+[04:39] Para isso utilizamos a diretiva do Vue v-for, ou seja, para cada tarefa no nosso array de tarefas queremos fazer alguma coisa.
+
+[04:54] Repara que ele já vai dar uma dica. Ele está falando que para você fazer uma iteração desse jeito você precisa linkar uma propriedade chamada key, que vai identificar esse item dentro da lista para o Vue poder saber quando ele vai ou não renderizar aquele componente de novo.
+
+[05:17] Então como não temos banco de dados que vai retornar o ID da tarefa, por exemplo, podemos utilizar o índice dessa tarefa no array. Então vamos pegar o index e usá-lo como chave, <Tarefa v-for=”(tarefa, index) in tarefas” :key=”index”/.
+
+[05:38] Ele já parou de reclamar. E para cada tarefa do nosso array ele vai renderizar. Vamos salvar e ver se isso funciona.
+
+[05:49] Repara que não temos mais uma lista vazia. Vamos testar uma tarefa nova e iniciar. O tempo vai contar, e na hora que fazemos um stop ele já vai inserir uma nova tarefa. Vamos fazer mais uma nova, vamos dar o “Play” e finalizar. E ele traz essa outra tarefa para a lista.
+
+[06:17] Agora, para finalizarmos de vez esse tratamento, essa ideia de lista viva que criamos, precisamos passar uma tarefa para o componente de tarefa. Ou seja, o que queremos não é mais esse componente estático, que sempre exibe a mesma coisa. Nós queremos receber isso via prop.
+
+[06:41] E como definimos uma prop que vamos receber? Podemos fazer props: { tarefa: { } }. O nome dessa prop é tarefa, ou seja, ela é a tarefa que será exibida no nosso componente. O tipo dessa tarefa é objeto type: Object as PropType<ITarefa>. E nós queremos um tipo específico de objeto. Para fazer isso utilizando o Vue vamos adicionar um novo import, que é o PropType.
+
+[07:14] E vamos indicar que essa propriedade que estamos recebendo é desse tipo específico que criamos, que é o ITarefa. Então fica props { tarefa: { type: Object as PropType<ITarefa> } }. Vamos fazer agora o import disso: import ITarefa from ‘../interfaces/ITarefa’.
+
+[07:38] Agora já dissemos qual é o tipo dessa propriedade. E vamos dizer que ela é obrigatória, então required: true. Ou seja, não existe uma tarefa sem essa propriedade.
+
+[07:52] Agora que já estamos recebendo ela por parâmetro, queremos exibir a descrição dela tarefa.descricao. E o “tempoEmSegundos” não será mais 15 fixo. Lembra que quando fazemos um link com uma variável nós colocamos os dois pontos. E, ao invés de 15, vai ser ”tarefa.duracaoEmSegundos”.
+
+[08:23] Agora sim não teremos mais texto estático. Mas precisamos passar isso para o nosso componente. Então vamos dizer que :tarefa=”tarefa”/>, vai ser essa tarefa da vez aqui, ou seja, a tarefa que ele está ali na interação.
+
+[08:43] Vamos salvar e ver se isso vai funcionar. Vou voltar no navegador e atualizar a página. Vamos ver se vai funcionar “Treinando no Alura” vou dar “Play” na tarefa e finalizar. Agora sim ele já está recebendo o texto e a duração exata que foi enviada na hora que salvamos essa tarefa.
+
+[09:11] Então se eu estou “Estudando Vue.js no Alura” damos um play ele vai contar esse tempo, o tempo vai decorrer, o tempo necessário para executar a tarefa, quando o usuário finaliza ele já coloca exatamente como precisamos. Ou seja, agora temos essa lista viva de tarefas, que representa de fato todas as tarefas que o usuário executou.
+
+@@04
+Para saber mais: Para que serve o "key" do v-for?
+
+O vue utiliza uma estratégia específica de renderização de listas, e o atributo :key é essencial para o bom funcionamento.
+Se quiser saber mais detalhes sobre como a biblioteca funciona por baixo dos panos, confira aqui.
+
+https://v3.vuejs.org/guide/list.html#maintaining-state
+
+@@05
+Resolução de problemas
+
+Tigas implementou a lista de tarefas, conforme o exercício, mas gerou um erro. Vamos ajudá-lo com a solução de problemas.
+O código que renderiza a lista:
+
+        <Tarefa v-for="(index, tarefa) in tarefas" :tarefa="tarefa" :key="index"/>COPIAR CÓDIGO
+O código da prop do componente Tarefa:
+
+  // código omitido
+  props: {
+    tarefa: {
+      type: Object as PropType<ITarefa>,
+      required: true
+    }
+  },
+  // código omitidoCOPIAR CÓDIGO
+E o erro:
+
+[Vue warn]: Invalid prop: type check failed for prop "tarefa". Expected Object, got Number with value 0COPIAR CÓDIGO
+Selecione uma alternativa
+
+Tigas não configurou corretamente a prop do componente, que deveria ser Number e não ITarefa.
+ 
+Alternativa correta
+O índice não deve ser utilizado como :key.
+ 
+O erro não está relacionado com a :key em si.
+Alternativa correta
+Tigas cometeu um erro comum, e inverteu as variáveis index e tarefa. O correto seria <Tarefa v-for="(tarefa, index) in tarefas" :tarefa="tarefa" :key="index"/>.
+ 
+Alternativa correta! Exatamente! É muito comum no dia a dia invertemos os parâmetros do v-for. O primeiro é o item da lista, e o segundo é o índice do item na lista.
+
+@@06
+Renderização condicional
+
+[00:00] Agora já está tudo funcionando como precisamos. Mas tem duas coisas que precisamos resolver para melhorar ainda mais a experiência do nosso usuário.
+[00:09] A primeira delas é que o usuário pode executar uma tarefa que não tem uma descrição específica. Então ele vai executar o que tiver que executar e quando finalizar teremos um espaço vazio, faltando uma descrição.
+
+[00:27] Precisamos tratar e colocar uma descrição padrão. Vamos no nosso “Tarefa.vue”. Se a descrição não existe, queremos uma descrição padrão. E podemos usar o nosso operador OU (||). Ou seja, se não existe vamos colocar uma descrição padrão, que será {{ tarefa.descrição || “Tarefa sem descrição”.
+
+[01:06] No JavaScript, quando fazemos um operador OU ele vai retornar o segundo valor. Então é isso que queremos: se essa descrição não existe, vai ficar como uma tarefa sem descrição. Vamos salvar e ver se isso funciona a aplicação.
+
+[01:22] Ele já está adicionando essa descrição padrão. Se o usuário executar uma tarefa sem descrevê-la teremos o nosso “Tarefa sem descrição”.
+
+[01:34] A última coisa que está faltando para melhorar ainda mais essa experiência é essa lista em branco. O que queremos na verdade é colocar um card dizendo que o usuário ainda não executou nenhuma tarefa nesse dia.
+
+[01:49] Então no “App.vue”, quando essa lista estiver vazia queremos exibir um box dizendo que o usuário ainda não executou nenhuma tarefa.
+
+[02:11] Já sabemos como fazer o box, então podemos copiar e colar a div do box. Mas ao invés de fazer isso, nós poderíamos extrair essa pequena porção para um componente que vai representar nosso box.
+
+[02:33] Então ao invés de fazer esse copiar e colar, vamos desistir dessa ideia e vamos criar o componente box, que vai representar aquele quadrado amarelo no qual podemos colocar um texto dentro.
+
+[02:52] Vamos pegar as classes, porque esse componente será bem simples, e criar um novo arquivo chamado “Box.vue”. Ele terá o <template> e o <script lang="ts">, lembrando de colocar o lang. O template basicamente será uma div com a classe onde vai o conteúdo, <div class=”box has-text-weight-bold”>. Só queremos um encapsulador.
+
+[03:31] E no script vamos fazer nosso import padrão: import { defineComponent } from ‘vue’ e export default defineComponent( { name: ‘Box’ } ).
+
+[03:58] Agora é só importarmos o box no “Tarefa.vue”. E agora podemos substituir o <div class=”box has-text-weight-bold”> somente pelo nosso componente Box. Só vamos lembrar de colocá-lo na nossa lista de componentes também.
+
+[04:23] Agora só está faltando mudar a cor do box para o “Box.vue”, então vou copiar e colar o style da cor do background. Agora sim temos o box amarelo que estamos reaproveitando ao invés de fazer “Ctrl + C” e “Ctrl + V”.
+
+[04:40] Vamos ver se isso funciona. Vamos adicionar aqui “Uma nova tarefa”, vamos dar o “play”, começa contar, podemos finalizar. Mas repara, cadê o nosso conteúdo? Nós adicionamos aqui, eu tenho aqui, quero esse conteúdo e colocar ele na minha caixa. Como eu faço isso no Vue? Muito simples.
+
+[05:04] Basta adicionarmos um <slot></slot>. O que queremos dizer com esse slot é que o que estiver dentro do componente será renderizado no Box. Vamos dar uma olhada para ver se funcionou. E continuou funcionando.
+
+[05:25] Agora sim, podemos tratar nosso placeholder. Teremos uma descrição quando o usuário começar a aplicação e ele ainda não executou nenhuma tarefa. No “App.vue” teremos um <Box> e dentro dele vamos colocar um texto “Você não está muito produtivo hoje :(”.
+
+[06:06] Quando a nossa aplicação executar ele tem que exibir essa caixa. Vamos atualizar e ver se isso funciona. Repara que ele até colocou, mas falou que não está conseguindo resolver Box, porque não importamos ele. Então vamos fazer import Box from ‘./components/Box.vue’.
+
+[06:34] Vamos adicionar na nossa lista de componentes e salvar. Agora continua funcionando, só que ele está sem o padding. É bem provável que tenhamos de fora daquela div lista.
+
+[06:46] Foi isso mesmo, vamos subir um nível para cima para ele ficar dentro da lista, daquele padding. Agora sim funciona. Se executarmos uma tarefa qualquer, quando finalizar, apareceu aquela mensagem "Você não está muito produtivo hoje :(", mas não é bem isso. Nós só queremos exibir essa mensagem se a nossa lista estiver vazia. Então vamos fazer essa renderização condicional.
+
+[07:16] Para isso podemos, por exemplo, criar uma propriedade computada, computed: que vai dizer se a listaEstaVazia (): boolean, é sempre um método. Para saber se a lista está vazia vamos ver se o tamanho dela é 0. Então vamos retornar se o tamanho da lista de tarefas é 0, return this.tarefas.length === 0.
+
+[07:54] Então nossa propriedade computed vai retornar o booleano, verdadeiro ou falso, que indica se a lista está vazia ou não.
+
+[08:04] E se a lista está vazia, ou seja, se vai me retornar true eu quero exibir o box. Senão, eu não quero exibir o box e quero deixar só a lista de tarefas. Então no nosso box vamos usar nossa diretiva v-if, <Box v-if="listaEstaVazia">. Se a lista está vazia eu quero exibir a minha mensagem dizendo que o usuário não está muito produtivo hoje. Vou salvar.
+
+[08:38] Vou recarregar a página no navegador, a lista está vazia e ele exibiu a mensagem. Vou colocar uma nova tarefa “Estudar TS”, iniciar e finalizar. E agora sim, repara que ele não exibe mais o box com aquele placeholder, com aquele conteúdo padrão dizendo que o usuário não está produtivo.
+
+[09:00] É exatamente isso que queríamos. Agora estamos conseguindo controlar e exibir uma mensagem amigável para o usuário, para quando ele ainda não adicionou nenhuma tarefa na lista.
+
+@@07
+Faça como eu fiz
+
+Praticar ajuda bastante no aprendizado de um novo conceito. Assim, é muito importante que você implemente o que foi apresentado nesta aula.
+
+Não deixe de sanar suas dúvidas antes de dar continuidade ao curso. Estaremos te esperando no fórum da Alura caso alguma dúvida surja.
+
+@@08
+O que aprendemos?
+
+Nessa aula, você aprendeu:
+Renderizar listas com o v-for;
+Utilizamos um mecanismo de repetição para renderizar N vezes uma tarefa, onde N é o tamanho da lista. Isso faz com que nossa lista seja dinâmica.
+Condicionais com v-if / v-else;
+Aprendemos como esconder ou exibir um componente, dado um estado específico utilizando a diretiva v-if.
+Fallback de conteúdo com o operador || (OU);
+Utilizamos o operador OU para exibir um texto padrão, caso a tarefa não possua uma descrição.
+Slots.
+Aprendemos a lidar com o slot quando criamos um componente para representar o Box. Assim, conseguimos exibir os elementos filhos dentro do nosso Box.
