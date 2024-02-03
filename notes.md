@@ -406,3 +406,213 @@ Escutar eventos de clique;
 O Vue nos ajuda a trabalhar com eventos, basta utilizarmos a sintaxe @NOMEDOEVENTO direto no elemento que queremos ouvir.
 Trabalhar com intervalos.
 O setInterval é perfeito para nosso cenário, de incrementar o tempo decorrido a cada segundo.
+
+#### 03/02/2024
+
+@02-Compondo componentes
+
+@@01
+Projeto da aula anterior
+
+Caso queira começar daqui, você pode baixar o projeto da aula anterior nesse link.
+
+https://github.com/alura-cursos/alura-tracker/tree/aula-1
+
+@@02
+Refatorando o formulário
+
+Transcrição
+
+[00:00] Nosso cronômetro já está iniciando quando ele precisa. Começa a contar o tempo e quando finalizamos ele para de contar o tempo. Esse é o comportamento desejado para a nossa aplicação.
+[00:13] Só que tem um pequeno porém: se dermos uma olhada no nosso código, o nosso formulário está muito extenso e está com um monte de responsabilidades.
+
+[00:24] Ele precisa mostrar o tempo decorrido, transformar o tempo decorrido em segundos para o formato que queremos, ouvir os eventos de play e stop.
+
+[00:33] Então precisamos começar a tomar um pouco de cuidado para ele não crescer demais. E como vamos começar a resolver esse problema?
+
+[00:43] Podemos pegar uma parte simples, que é justamente a parte responsável por mostrar o tempo em segundos formatado e extrair para outro componente. Então vamos começar a fazer isso.
+
+[00:57] Precisamos de um visual de cronômetro. Então vamos criar nosso componente cronômetro. Já sabemos como fazer “Components > New File”, escrever “Cronometro.vue”. Já sabemos que o nosso HTML é o template, então basta só darmos um “Ctrl + X” para tirar do formulário e um “Ctrl + V” para colocá-lo no cronômetro. E vou pedir para ele formatar.
+
+[01:26] Agora precisamos trazer o comportamento dele. Precisamos receber o valor “tempoDecorrido” de alguma forma e formatá-lo. Então vamos para o nosso script. Ficou duplicado, vou só ajustar, vamos ajustar o nosso import. Queremos o “defineComponent” direto do Vue. E vamos direto dar o nome para o nosso componente, que vai ser “Cronometro”:
+
+[02:07] Agora precisamos de alguma forma receber esse “tempoDecorrido” e formatá-lo. Para formatar já sabemos como fazer, já está pronto. É só mover o “computed” do formulário e colocar no cronômetro. Então além do name ele terá a propriedade computada “tempoDecorrido”.
+
+[02:37] Agora o que está faltando é receber esse tempo em segundos. Precisamos de alguma forma pedir para o nosso componente pai informar o tempo que passou em segundos.
+
+[02:51] Como definimos esse tempo em segundos? Nós vamos criar uma outra propriedade. Tudo que vamos receber do componente pai vai ficar dentro da nossa propriedade props. Como o próprio nome já diz, props são as propriedades que vamos receber nesse componente.
+
+[03:12] Para definir isso precisamos dizer qual é o nome da propriedade, que vai ser tempoEmSegundos:. E como vamos configurar essa propriedade? Queremos dizer qual é o tipo e qual é o valor padrão.
+
+[03:32] O tipo dessa propriedade é um valor numérico, é um número inteiro que representa a quantidade de segundos decorrida, então type: Number,.
+
+[03:42] E além disso podemos definir um valor padrão, então default: 0. Então por padrão esse tempo decorrido será 0.
+
+[03:52] Agora já trouxemos todo o comportamento, a formatação de data para cá. Usamos o mesmo nome, então continua funcionando, this.tempoEmSegundos quer dizer essa propriedade tempoEmSegundos aqui.
+
+[04:04] O que queremos é no nosso formulário usar esse componente. Então no formulário vamos colocar <Cronometro />. Só que precisamos importar e registrar esse componente, o que já sabemos como fazer. Então na parte de baixo vamos fazer import Cronometro from ‘./Cronometro.vue’.
+
+[04:35] E para finalizar precisamos indicar que esse cronômetro é um componente filho, então components: { Cronometro }. Importamos o cronômetro, definimos como componente filho e importamos. Vamos salvar e ver se isso funciona.
+
+[04:58] Vou voltar aqui na minha página, ele está reclamando do modo como estamos começando o componente. Ficou um sinal de maior duplicado, então vou arrumar e salvar.
+
+[05:21] Vou atualizar. E agora ele está falando que não está entendendo a parte : string. Por que isso aconteceu? Na hora que definimos o nosso componente nós lançamos a tag script, mas não definimos o lang, que é o TypeScript. Então fica <script lang=’ts’>. Vou salvar.
+
+[05:51] Vamos olhar agora. Está funcionando e está exibindo inclusive o valor padrão. Vamos dar o play. Nada aconteceu. Para esse cronômetro incrementar conforme o tempo for passando, precisamos indicar no formulário que esse cronômetro vai ter uma propriedade chamada “tempoEmSegundos”, que está relacionada com o “tempoEmSegundos” que está de fato sendo contado.
+
+[06:24] Então agora passamos o nosso valor de tempo em segundos via prop para o componente cronômetro. Então ele espera um tempo em segundos também. Vou salvar o formulário e vamos voltar para o Alura Tracker.
+
+[06:39] Agora ele já está até funcionando, porque ele fez o hot reload, ou seja, na hora que eu salvei ele já atualizou o componente e agora ele está recebendo o valor que o formulário passa para ele.
+
+[06:54] Vamos olhar o código de novo. Nós continuamos com o nosso comportamento de iniciar e finalizar e passamos o “tempoEmSegundos” para o cronômetro. Então nosso cronômetro recebe o tempo em segundos.
+
+[07:10] Dado o tempo em segundos, ele vai transformar daquele mesmo jeito que fazíamos antes: transformar isso num objeto de data, pegar a string e recortar só o pedaço que queremos representando quantas horas, minutos e segundos passaram. Vamos continuar agora melhorando o nosso sistema.
+
+@@03
+Evoluindo o temporizador
+
+[00:00] Já refatoramos o código do nosso cronômetro. A porção responsável por mostrar o tempo decorrido já foi refatorada, mas precisamos melhorar um pouco mais a experiência do desenvolvedor.
+[00:13] O nosso formulário, apesar de já estar um pouco menor porque já extraímos a lógica de exibição do cronômetro, ainda está muito grande. Temos todo o controle de tempo, todo esse temporizador de iniciar e finalizar. Essa responsabilidade ainda está dentro do formulário.
+
+[00:32] Então vamos dar mais uma refatorada, vamos extrair mais um componente, que é justamente toda essa parte aqui que vai controlar o iniciar, o finalizar e o tempo decorrido.
+
+[00:43] Já vou dar um “Ctrl + X” para tirar isso. Vou criar um componente novo chamado “Temporizador.vue”. Já sabemos como é o template. Já temos nossa div com o cronômetro, o iniciar e o finalizar.
+
+[01:06] Agora precisamos trazer toda a lógica que está no formulário. Então vamos copiar tudo que vamos reaproveitar do formulário e colar no temporizador. Vou começar ajustando o nome do componente, mudando de “Formulário” para “Temporizador”.
+
+[01:26] O import do cronômetro já está correto, os dados já estão corretos. Nosso método de iniciar e finalizar também. Então vou salvar e agora podemos tirar tudo que ficou por responsabilidade do temporizador.
+
+[01:51] Repara que o nosso formulário está bem mais limpo. A lógica de comportamento está bem menor. E o HTML também, porque agora ele vai ter só o temporizador. Já ficou bem mais enxuto e coeso o nosso formulário. Vamos ver se essa nova refatoração está funcionando. Vou atualizar a página do Alura Tracker.
+
+[02:15] Se eu der um “Play” ele vai começar a contar. Se eu mandar parar ele para a contagem. O comportamento continua exatamente como era antes. Só que agora já melhoramos a experiência do desenvolvedor.
+
+[02:28] E vamos agora para a experiência do usuário. Repare que os botões estão habilitados o tempo todo. Então o usuário pode vir aqui e clicar muito rápido, cliquei várias vezes no botão de “Play”, o cronômetro fica tudo doido, porque tem vários intervalos agora incrementando o nosso tempo em segundos. E não é isso que queremos.
+
+[02:51] Nós queremos deixar o botão de “Play” habilitado se o cronômetro está parado. E se ele estiver rodando, queremos desabilitar o “Play”. E o contrário para o “Stop”. Ele só pode ficar habilitado se o cronômetro estiver rodando, e se ele estiver parado o “Stop” tem que estar desabilitado.
+
+[03:09] Então vamos criar esse controle no nosso temporizador. Vou criar uma nova propriedade dentro do meu estado. Vou chamar de cronometroRodando: false.
+
+[03:20] Estou iniciando como false, ou seja, se o cronômetro não está rodando, eu quero desabilitar o meu botão de “Stop”.
+
+[03:33] Então no meu botão de “Stop” vou criar o nosso atributo linkado com esse “cronometroRodando”: disabled=”cronometroRodando”.
+
+[03:43] Só que esse atributo tem que se linkar com o meu estado. E para fazer isso no Vue eu adiciono dois pontos na frente. Com isso ele sabe que o valor do atributo está linkado com o meu estado. Então se o meu cronômetro não está rodando, eu não posso finalizar, então fica :disabled=”!cronometroRodando”.
+
+[04:07] Vou salvar e vamos ver se isso funciona. Repara que eu já não consigo finalizar quando o cronômetro está parado.
+
+[04:15] Agora precisamos fazer a lógica inversa: se eu iniciá-lo, eu preciso inverter essas propriedades. Quando eu iniciar o meu cronômetro, eu vou dizer que this.cronometroRodando = true. E logo quando finalizar, this.cronometroRodando = false.
+
+[04:46] Então quando eu inicio ele é true e quando eu finalizo ele é false. Vamos ver se agora quando eu inicio ele já troca o atributo de desabilitado. Atualizei e dei o “Play”. E ele já habilitou o “Stop”, mas faltou travar o “Play”.
+
+[05:09] Então no meu button de iniciar, vamos colocar :disabled=”cronometroRodando”. Então se o cronômetro está rodando, ele está desabilitado. E vou salvar.
+
+[05:28] Vou voltar para a minha página e vou recarregar. O cronômetro está parado, então posso iniciar, mas não posso finalizar. Se eu iniciar, automaticamente ele já troca e eu posso finalizar, mas não posso iniciar novamente.
+
+[05:45] Agora sim, tanto a experiência do desenvolvedor quanto a do usuário estão bem bacanas. Agora, quando o usuário finalizar a tarefa, temos que colocar isso em alguma lista para que comecemos a exibir todas as tarefas finalizadas.
+
+[06:03] Vamos agora adicionar esse comportamento de comunicação entre componentes.
+
+@@04
+Para saber mais: Olhando a Date API mais de perto
+
+O objeto de data é muito poderoso, e hoje em dia ele faz muitas coisas que facilitam o nosso dia a dia. Vale a pena conhecer mais para tirarmos proveito de todas os métodos que ele nos disponibiliza. Confira aqui.
+
+@@05
+Code review
+
+Maia precisa emitir um evento que informa as horas, no formato HH:mm:ss mas está com dificuldade para formatar a data:
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  // código omitido
+  emits: ['aoSolicitarHora'],
+  methods: {
+    informarHora () : void {
+      this.$emit('aoSolicitarHora', new Date())
+    }
+  }
+  // código omitido
+});
+</script>COPIAR CÓDIGO
+Além da ISO string que utilizamos, o objeto de data possui uma outra forma de formatar somente as horas, minutos e segundos. Qual seria?
+
+new Date().toISOString()
+ 
+Esse método retorna uma string respeitando a ISO.
+Alternativa correta
+new Date().toLocaleTimeString()
+ 
+Alternativa correta! Exatamente! Esse método já retorna o horário, localizado de acordo com o idioma do navegador. Saiba mais sobre ele aqui.
+Alternativa correta
+new Date().toLocaleDateString()
+ 
+Esse método retorna uma representação em string de parte da data dada a instância Date de acordo com as convenções específicas do idioma. Saiba mais sobre ele aqui.
+
+https://en.wikipedia.org/wiki/ISO_8601
+
+https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
+
+https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
+
+@@06
+Eventos e props
+
+[00:00] Nosso controle de tempo já está funcionando exatamente como ele precisava funcionar. Conseguimos iniciar, ele começa a contar e então finalizamos.
+[00:10] E agora precisamos fazer duas coisas. A primeira delas é que quando o temporizador for finalizado nós precisamos avisar o formulário que o usuário finalizou. E quando o usuário finalizar o tempo, o formulário em si precisa juntar as informações de tempo com o input com o nome da tarefa e passar isso adiante.
+
+[00:35] Então são duas comunicações que precisamos fazer. Vamos começar definindo o comportamento do nosso temporizador.
+
+[00:44] Para fazer isso utilizando o Vue, nós vamos indicar no nosso defineComponent, o método que configura o nosso componente e o exporta, que o nosso componente vai emitir um evento. Ele vai emitir alguma coisa em determinado momento.
+
+[01:05] Ele tem uma propriedade chamada emits, que é justamente uma lista de eventos que esse componente é capaz de emitir.
+
+[01:14] E o primeiro deles que queremos indicar é o seguinte: emits: [‘aoTemporizadorFinalizado’]. Ou seja, quando o tempo for finalizado nós vamos fazer alguma coisa.
+
+[01:29] E queremos fazer isso logo após o usuário finalizar. Nós já definimos que esse componente emite esse evento e agora queremos de fato emiti-lo só quando o usuário finalizar.
+
+[01:45] Para emitir esse evento, ou seja, para o temporizador avisar para o pai dele que o evento foi emitido vamos fazer this.$emit, que é um método que recebe dois parâmetros.
+
+[02:06] O primeiro parâmetro é o nome do evento que ele está emitindo, justamente o ('aoTemporizadorFinalizado',).
+
+[02:14] O segundo parâmetro é o payload, é a carga de dados que vai junto, que quem estiver ouvindo o evento será capaz de receber, que é o nosso tempoEmSegundos, ('aoTemporizadorFinalizado', this.tempoEmSegundos) .
+
+[02:30] E repara que quando o tempo for finalizado, ou seja, aquela tarefa for finalizada, também vamos precisar liberar o temporizador para a próxima tarefa. Para isso vamos dizer que this.tempoEmSegundos = 0, ou seja, vamos resetar.
+
+[02:48] Quando o usuário finalizar ele não vai dar play e pause, ele vai finalizar. Vamos salvar e ver se continua funcionando.
+
+[02:59] Vou atualizar a página do Alura Tracker. Iniciei, o tempo está contando. Finalizei e ele zerou o cronômetro para mim.
+
+[03:08] Mas está faltando fazer alguma coisa com essa informação. Precisamos agora no formulário ouvir esse evento.
+
+[03:19] Nós já fizemos isso antes com um evento padrão. Repare que ouvimos o evento de clique dentro do temporizado. Quando o usuário clica no botão de iniciar ou finalizar começamos a fazer alguma coisa.
+
+[03:37] Para tratarmos com os nossos eventos customizados, que nós criamos, é bem parecido. Então no formulário vamos dizer que queremos ouvir um evento, então usamos o arroba. Então vamos fazer <Temporizador @aoTemporizadorFinalizado=”finalizarTarefa”/>.
+
+[04:11] Quando o temporizador for finalizado, queremos finalizar a tarefa. Então vamos criar agora esse método na parte de baixo: methods: { finalizarTarefa () { } }.
+
+[04:31] No nosso evento customizado estamos enviando o tempo em segundos. Então queremos receber isso: methods: { finalizarTarefa (tempoDecorrido: number) { } }.
+
+[04:50] E o “finalizarTarefa” é um método que não retorna nada, então fica methods: { finalizarTarefa (tempoDecorrido: number) : void { } }. O nosso método não vai finalizar nada, ele vai receber o tempo decorrido. Então vamos fazer um console.log(‘tempo da tarefa’, tempoDecorrido).
+
+[05:20] Vamos salvar e ver se isso funciona. Vou atualizar a página no navegador. Vou iniciar e ele vai começar a contar. Vou dar um stop e ele deu que o tempo da tarefa é 3. Ele até já identifica que é um número, e o tempo da tarefa foi o tempo que mandamos imprimir.
+
+[05:43] Agora junto com isso precisamos capturar o valor indicado pelo usuário no texto do input. Então quero linkar esse cara com um estado do componente. Vamos usar a propriedade v-model, que será responsável por linkar com o nosso estado a descrição da nossa tarefa: v-model=”descricao”.
+
+[06:12] Dado um input que meu usuário digitou, eu quero linkar com o meu estado. E agora preciso declarar esse estado. Então vou usar o data, que é o método que retorna o estado: data ( ) { return { descricao: ‘ ‘}. Então ele retorna um objeto que tem uma descrição que começa vazia.
+
+[06:33] Então linkamos o valor da variável descrição do estado com o que o usuário digitou. Então além de pegar o tempo decorrido vamos pegar o nome da tarefa: console.log(‘descrição da tarefa’, this.descricao).
+
+[06:59] Vamos ver se conseguimos linkar todos os valores envolvidos para o nosso formulário, o nome, a descrição da tarefa e tempo decorrido.
+
+[07:09] Então vou atualizar a página do navegador e colocar como exemplo “Estudar Vue.JS”. Vou dar “Play” e ele vai começar a contar. Dei um “Stop” e o tempo da tarefa foi de 2 segundos e a descrição da tarefa foi “Estudar Vue.JS”.
+
+[07:29] Assim como precisamos zerar o formulário, também precisamos zerar o input para liberá-lo para a próxima tarefa. Então vamos fazer isso.
+
+[07:39] Depois de fazer o console.log vamos dizer que a descrição será vazia, ou seja, eu quero limpar o input para a próxima tarefa. Vou salvar e voltar para o navegador, recarregando a página.
+
+[07:54] Vou inserir “Estudando TS”. Vou iniciar, o tempo vai começar a contar, vou finalizar e ele limpou o input e logou no console para nós o tempo e a descrição da tarefa.
+
+[08:10] E agora o formulário, por sua vez, precisa passar essa tarefa adiante, para alguém que vai controlar a lista. Não é responsabilidade do formulário controlar essa lista. Ele sabe quando uma tarefa foi finalizada e ponto. Essa é a responsabilidade dele.
+
+[08:28] Então temos que começar a pensar agora em para onde essa tarefa vai, como vamos identificá-la e aonde vamos armazená-la. Precisamos começar a trabalhar com listas.
