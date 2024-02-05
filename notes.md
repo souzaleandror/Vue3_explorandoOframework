@@ -828,3 +828,197 @@ Fallback de conteúdo com o operador || (OU);
 Utilizamos o operador OU para exibir um texto padrão, caso a tarefa não possua uma descrição.
 Slots.
 Aprendemos a lidar com o slot quando criamos um componente para representar o Box. Assim, conseguimos exibir os elementos filhos dentro do nosso Box.
+
+#### 05/02/2024
+
+@04-Estilos estilosos
+
+@@01
+Projeto da aula anterior
+
+Caso queira começar daqui, você pode baixar o projeto da aula anterior nesse link.
+
+https://github.com/alura-cursos/alura-tracker/tree/aula-3
+
+@@02
+Preparando o modo escuro
+
+[00:00] No nosso Alura Tracker já conseguimos iniciar e finalizar tarefas e popular a nossa lista de tarefas executadas, tudo do jeito que precisávamos.
+[00:09] E agora vamos partir para uma funcionalidade mais visual. Queremos adicionar a opção de um modo escuro. O usuário poderá ativar e desativar esse modo escuro. E vamos alterar tanto o fundo quanto a cor primária.
+
+[00:27] Tem várias formas diferentes de fazer isso, e no Alura Tracker vamos usar variáveis CSS. Então vamos entrar no nosso “App.vue”.
+
+[00:44] O que eu quero é adicionar essas variáveis. A partir da nossa tag principal, que é a main, vamos criar algumas variáveis. Vamos chamar a primeira variável de bg-primario, que será o nosso backgroud primário, que no nosso caso é branco: --bg-primario: #fff;.
+
+[01:05] Depois vamos para o texto primário, que será preto: --texto-primario: #000;. E agora queremos trocar as cores quando o modo escuro estiver ativo. Então como vamos utilizar o CSS para fazer isso?
+
+[01:27] Quando existe uma classe modo escuro, main.modo-escuro, nós vamos alterar o valor dessas variáveis. Para o bg-primario vou pegar o hexadecimal da minha cola, que vai ser um azul bem escuro, --bg-primario: #2b2d42;. E a cor do texto será mais clara. --texto-primario: #ddd;.
+
+[01:49] Então vamos começar a colocar isso para funcionar. Primeiro vamos ativar o modo escuro por padrão, <main class="columns is-gapless is-multiline modo-escuro">.
+
+[02:01] Agora vamos pegar a parte da direita que está branca, vamos adicionar uma classe chamada “conteúdo”, que é o conteúdo da nossa aplicação e vamos utilizar essa variável.
+
+[02:14] Então nosso .conteúdo terá um background color, que é justamente essa variável que acabamos de criar, background-color: var(--bg-primario);. Vamos salvar e ver se isso funciona no navegador.
+
+[02:31] Já está um azul bem escuro. E agora precisamos tratar a parte do formulário. Vamos entrar no “Formulario.vue” e adicionar as cores disponíveis. Vamos colocar uma classe para representar nosso formulário.
+
+[02:58] Vamos adicionar nosso <style>. Dessa vez não queremos que ele seja escopado, queremos que ele passe para todos os componentes filhos. E queremos que todo mundo dentro do .formulario tenha uma cor de fonte da variável texto-primario, color: var(--texto-primario);.
+
+[03:26] Vamos ver se isso vai funcionar. Faltou mudar a cor de fundo também. Então nosso background do .formulario vai ser a variável bg-primario, background -color: var(--bg-primario);.
+
+[03:45] Vamos verificar no navegador. Agora funcionou. Está faltando ainda no nosso cronômetro. Então vamos adicionar no cronômetro essa cor de variável. No “Cronometro.vue” vamos adicionar nosso <style scoped>. E na nossa seção vamos adicionar uma classe="display" que será o display do nosso cronômetro.
+
+[04:10] E vamos também seguir utilizando as variáveis no estilo de .display. A cor da fonte será color: var(--texto-primario);.
+
+[04:26] Vamos salvar. Agora sim, tudo funcionando conforme o esperado. Quando o modo escuro está ativo nós vemos uma cor de fonte mais clara. E quando o modo está inativo ele volta ao normal.
+
+[04:50] Já temos os dois modos bem definidos. E o que precisamos agora é adicionar uma funcionalidade para o usuário conseguir fazer essa alteração.
+
+[04:59] Então vamos adicionar um botão na barra lateral que, conforme o usuário clica e interage, ele vai conseguir ativar ou desativar esse modo escuro.
+
+@@03
+Para saber mais: Variáveis CSS
+
+O uso de variáveis CSS é poderoso, não deixe de conferir aqui.
+
+https://cursos.alura.com.br/course/mobile-first-layouts-responsivos/task/75492
+
+@@04
+Ouvindo a troca de tema
+
+[00:00] Nosso modo escuro já está funcionando. E agora vamos partir para adicionar uma opção para o usuário poder escolher qual dos modos ele quer que fique ativo.
+[00:10] Vamos entrar na nossa “BarraLateral.vue”. Logo abaixo do h1 vamos adicionar um botão e utilizar a classe do Bulma para ficar um botão bem estilizado, <button> class="button". Vamos chamá-lo de Ativar modo escuro. Ele já apareceu no navegador.
+
+[00:35] Vamos centralizar esse texto todo, então no header vamos adicionar uma propriedade nova, com text-align: center;. Agora ele centralizou nossa imagem e o botão de ativar o modo escuro.
+
+[00:49] Agora, dado o clique desse usuário temos que avisar que o estilo está sendo trocado, que ele está alterando o modo que ele quer ativo.
+
+[01:01] Então quando o usuário clicar, queremos alterar o modo. Então @click=”alterarTema”. Agora vamos criar esse método: methods: { alterarTema ( ) { } }.
+
+[01:28] Nós não vamos controlar esse tema nessa parte. Nós vamos controlar o tema no “App.vue”. E já aprendemos como fazer um componente filho se comunicar com o pai, que é através da emissão de eventos. Então teremos nossa propriedade emits, que vai receber um array de strings com todos os eventos que ele emite. Vamos chamar de emits: [‘aoTemaAlterado’].
+
+[02:02] E quando o usuário clicar vamos fazer essa emissão, lembrando que o primeiro parâmetro é o nome do evento: this.$emit(‘aoTemaAlterado’). E no nosso caso só temos dois modos: só poderemos ativar e desativar o modo escuro.
+
+[02:27] Então vamos criar o estado local, que também já vimos como fazer, usando o método data (), que retorna um objeto, que será o modoEscuroAtivo, que por padrão será false.
+
+[02:45] Então toda vez que o usuário trocar, vamos alterar o valor desse booleano. Então toda vez que ele clicar vamos pegar o modo escuro e substituir pelo oposto. Se for false vai ficar true e vice-versa. E com isso vamos conseguir inclusive passar isso adiante. methods: { alterarTema ( ) { this.modoEscuroAtivo = !this.modoEscuroAtivo this.$emit('aoTemaAlterado', this.modoEscuroAtivo)} }.
+
+[03:09] Agora, quando esse modo estiver ativo, temos que trocar o texto do botão. Então vamos criar nossa propriedade computada para deixar isso certo para o usuário: computed: { textoBotao ( ) { } }.
+
+[03:32] E vamos dizer que se o modo escuro está ativo nós vamos retornar “Desativar modo escuro”. Caso contrário, vamos retornar “Ativar modo escuro”. if (this.modoEscuroAtivo) { return 'Desativar modo escuro' } return 'Ativer modo escuro'}.
+
+[03:54] Se o modo escuro está ativo, o texto é desativar. Senão, o texto é ativar. Agora já podemos usar essa variável textoBotao dentro do <button> para ficar com o texto do botão correto.
+
+[04:06] Vamos ver se esse monte de códigos vai funcionar. Voltando para o navegador, ativar e desativar modo escuro, botão já está funcionando como deveria. E agora precisamos ouvir isso no nosso “App.vue”. Então na barra lateral vamos escutar o evento @aoTemaAlterado, e nós vamos trocar o tema.
+
+[04:35] Agora vamos criar esse método trocarTema(). Ele vai receber um booleano por padrão, que é o modoEscuroAtivo.
+
+[04:54] Agora precisamos adicionar, quando o modo escuro estiver ativo queremos fazer alguma coisa. Se não estiver, não queremos adicionar essa classe.
+
+[05:05] Para isso, a primeira coisa que faremos é trazer esse estado. O estado vai controlar o texto do botão, e abaixo o estado vai controlar o modo, se ele está ativo ou inativo. Então modoEscuroAtivo: false.
+
+[05:29] E quando o usuário trocar vamos fazer a troca. O que recebermos por padrão vamos colocar no nosso estado. Essa propriedade que estamos recebendo por parâmetro é um booleano. Dado o que estamos recebendo, vamos alterar o nosso estado, trocarTema (modoEscuroAtivo: boolean) { this.modoEscuroAtivo = modoEscuroAtivo.
+
+[06:02] Agora, caso o modo escuro esteja ativo, temos que adicionar uma classe. Caso contrário, não. Para fazer isso usando o Vue, vamos adicionar outra propriedade classe na tag main, agora usando dois pontos na frente, :class="{}". Ou seja, vai código JavaScript.
+
+[06:30] E essa propriedade vai receber um objeto. Qual é o nosso objetivo caso o modo escuro esteja ativo? A classe vai existir ou não baseado no nosso estado.
+
+[06:48] Na nossa esquerda, o nome da nossa propriedade é a classe que queremos adicionar, então :class=”{ ‘modo-escuro’ }”.
+
+[06:56] E na direita vamos passar um booleano, ou seja, vamos passar uma flag de falso ou verdadeiro: :class=”{ ‘modo-escuro’ : modoEscuroAtivo}. E o que o Vue vai fazer por baixo dos panos? Se o modo escuro estiver ativo, ele vai adicionar essa classe. Se não estiver ativo, ele não adiciona. Vamos salvar e testar se o modo escuro está finalmente funcionando no navegador.
+
+[07:23] Se clicarmos fica escuro e se clicarmos de novo ele remove o modo escuro. Agora sim já temos a funcionalidade completa de fazer a troca desse modo escuro. Podemos ativar ou desativar de acordo com a nossa vontade.
+
+@@05
+Estilos e objetos
+
+[00:00] Agora, além de fazer o tracking das tarefas diárias do nosso usuário, já temos também o modo escuro, podemos alterar e dizer o que queremos ou não.
+[00:17] Antes de seguirmos para a parte final do nosso curso, que é onde tentaremos publicar a nossa aplicação, vale a pena conferir um outro jeito de aplicar estilo.
+
+[00:29] Vamos dar uma revisada no código da barra lateral, por exemplo. Temos aplicado vários estilos no nosso CSS, às vezes escopado, às vezes não. Nosso arquivo "Box.vue", por exemplo, tem um background color.
+
+[00:45] E esse não é o único jeito que o Vue nos permite aplicar nosso estilo, nosso CSS. Podemos fazer, por exemplo, um bind direto com as nossas propriedades utilizando a propriedade style.
+
+[01:03] Podemos passar um objeto que fará toda a configuração dos estilos para esse componente, :style="estilos". Então vamos criar esse “estilos” aqui no nosso "Box.vue". Vamos usar o data (), que é o estado, retornando um objeto, passando o nosso estilo, return { estilos:. E finalmente podemos trazer o que queremos configurar para o nosso box.
+
+[01:30] Então podemos pegar esse estilo CSS que estamos passando aqui, background, e jogar para dentro de estilos, vamos tirar totalmente esse trecho de código do <style scoped> daqui. Vamos testar para ver se isso continua funcionando. Vamos atualizar a página do Alura Tracker.
+
+[01:49] Repare que nosso box continua do jeito que ele funcionava antes, já com a cor direto fazendo o bind com a propriedade.
+
+[01:58] Isso pode facilitar nossa vida se são propriedades que mudam determinado estado do componente. Por exemplo, podemos ter um alerta vermelho para uma mensagem de erro ou verde para uma mensagem de sucesso. E usando dessa forma conseguimos controlar via JavaScript o que estamos passando.
+
+[02:22] E vale ressaltar que como passamos o background não houve problema nenhum. Mas se quiséssemos passar a propriedade background-color, poderíamos fazer de duas formas: podemos passar entre aspas, 'background-color': '#FAF0CA' , que ele vai continuar funcionando como deveria.
+
+[02:44] Ou então podemos usar o CamelCase e ao invés de passar com hífen vamos passar com o C maiúsculo, e ele vai entender que isso quer dizer que tem um hífen separando as palavras, backgroundColor: '#FAF0CA'.
+
+[03:02] Isso funciona para todos os estilos CSS. Então além de programar nosso CSS na propriedade style, também podemos fazer isso diretamente via JavaScript, linkando as propriedades de um objeto com as propriedades CSS que ele precisa ter.
+
+[03:18] Simples assim, é uma nova forma de trabalhar com o CSS que você pode utilizar nos seus projetos do dia a dia.
+
+@@06
+Programação em par
+
+Cláudia implementou a troca de modos, entre o claro e o escuro. Mas, por algum motivo, o tema está invertido. Quando deveria estar escuro, está claro e vice-versa.
+O código que ela escreveu é o seguinte:
+
+<template>
+  <header>
+    <h1>alura <strong>tracker</strong></h1>
+    <div class="has-text-centered">
+      <button class="button" @click="alterarModo">Ativar modo {{ textoBtn }}</button>
+    </div>
+  </header>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "BarraLateral",
+  emits: ['aoAlterarModo'],
+  data () {
+    return {
+      modoEscuro: false
+    }
+  },
+  methods: {
+    alterarModo () : void {
+      this.$emit('aoAlterarModo', this.modoEscuro)
+      this.modoEscuro = !this.modoEscuro
+    }
+  },
+  computed: {
+    textoBtn () : string {
+      return this.modoEscuro ? 'claro' : 'escuro'
+    }
+  }
+});
+</script>COPIAR CÓDIGO
+Selecione uma alternativa
+
+O bug existe porque Cláudia está alterando o valor do estado modoEscuro depois de emitir o evento. Logo, o valor propagado está invertido.
+ 
+Alternativa correta! Exatamente! Programação em par (ou pair programming) ajuda muito quando ficamos presos muito tempo numa mesma lógica. Chamar alguém com a cabeça fresca é uma excelente alternativa. Aqui na Alura você pode usar o nosso fórum sempre que precisar!
+Alternativa correta
+Basta iniciar o modo escuro como true.
+ 
+Alternativa correta
+Cláudia pode negar a condição this.modoEscuro no textoBtn.
+
+@@07
+Faça como eu fiz
+
+Praticar ajuda bastante no aprendizado de um novo conceito. Assim, é muito importante que você implemente o que foi apresentado nesta aula.
+
+Não deixe de sanar suas dúvidas antes de dar continuidade ao curso. Estaremos te esperando no fórum da Alura caso alguma dúvida surja.
+
+@@08
+O que aprendemos?
+
+Nessa aula, você aprendeu:
+Uso de variáveis CSS para temas (claro/escuro);
+Utilizando essas variáveis, nós podemos facilmente controlar o tema do nosso Alura Tracker, alterando a cor de fundo e a cor do texto de acordo com o tema aplicado.
+Adicionar e remover classes baseado num estado do componente;
+Aprendemos a adicionar ou remover classes, condicionalmente utilizando a diretiva :class.
+Estilos via objetos.
+Aprendemos uma nova forma de aplicar estilos a um elemento, utilizando um objeto que representa as propriedades e seus valores.
