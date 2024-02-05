@@ -8,7 +8,7 @@ npm install -g @vue/cli
 npm run serve
 npm install bulma
 npm i fontawesome-free
-
+npm i -g http-server
 ```
 
 @01-Iniciando o Alura Tracker 
@@ -1022,3 +1022,171 @@ Adicionar e remover classes baseado num estado do componente;
 Aprendemos a adicionar ou remover classes, condicionalmente utilizando a diretiva :class.
 Estilos via objetos.
 Aprendemos uma nova forma de aplicar estilos a um elemento, utilizando um objeto que representa as propriedades e seus valores.
+
+#### 05/02/2024
+
+@05-Compilando a aplicação
+
+@@01
+Projeto da aula anterior
+
+Caso queira começar daqui, você pode baixar o projeto da aula anterior nesse link.
+
+https://github.com/alura-cursos/alura-tracker/tree/aula-4
+
+@@02
+Vue Devtools
+
+[00:00] Vamos agora partir para a experiência do desenvolvedor de novo e pensar no que podemos melhorar ainda mais no nosso dia a dia enquanto desenvolvedores, no que pode te ajudar no seu dia a dia a entender o que está acontecendo com cada componente.
+[00:16] O Vue traz uma extensão do Google Chrome chamada "Vue.js Devtools". Você pode instalar para você. E no que ela nos ajuda? Vou abrir e de cara ele já me diz que no meu app o modo escuro está inativo e eu tenho um array vazio de tarefas.
+
+[00:47] Vou adicionar uma tarefa nova “Estudando TS” vou deixar ele iniciar e vou dar uma olhada no formulário, ele já pegou a descrição. Se olharmos o temporizador, ele vai mostrar o que está acontecendo, já tem o identificador do nosso intervalo que está rodando.
+
+[01:08] Repara que podemos inclusive alterar manualmente caso queiramos debugar ou entender determinada situação. Na hora que eu clico em "Stop" e paro a tarefa ele já muda. Eu já tenho a tarefa e eu consigo ver todas as propriedades.
+
+[01:25] Repare que como colocamos nome em todos os componentes veremos exatamente o nome que colocamos, toda a nossa árvore de componentes e qual é o estado de cada um deles.
+
+[01:38] Conseguimos coisas incríveis com essa ferramenta. Inclusive, podemos partir para entender como funciona uma timeline, ele vai pegar os eventos de clique, de mouse, se a performance está boa, como está tudo isso.
+
+[01:50] Conseguimos entender cada porção, tudo que está acontecendo na nossa aplicação, desde a nossa árvore de componentes, cada um com seu estado, ou até toda a árvore de eventos e tudo que está acontecendo durante o nosso desenvolvimento.
+
+[02:07] Então conforme a aplicação vai crescendo e você quer agilizar o seu processo de desenvolvimento, você pode usar essa ferramenta incrível do Vue Devtools, colocar no seu Google Chrome e entender como está o estado de cada componente, inclusive em tempo real.
+
+[02:26] Ou seja, conseguimos entender de onde está vindo o status do nosso componente e podemos alterar de forma manual o que está acontecendo. Tudo vai respeitar o que estamos fazendo.
+
+[02:47] Vou repetir, repare que se alterarmos manualmente o “modoEscuroAtivo” para true, ele inverte o botão mas não faz o broadcast do evento, e agora vai ficar invertido. Então muito cuidado na hora de alterar.
+
+[02:59] Mas isso pode ser uma ferramenta muito bacana para você entender o que está acontecendo com seu componente, de repente resolver um problema ou entender a causa de um possível bug.
+
+[03:10] Vamos partir para a parte de publicação. Vamos entender como funciona, como faremos para publicar todo esse código que geramos em TypeScript, em arquivos .vue. Precisamos transformar isso para uma forma que o navegador entenda. É isso que veremos na próxima aula.
+
+@@03
+Fazendo o build da aplicação
+
+[00:00] Vamos sair agora do nosso ambiente de desenvolvimento e começar a entender como se dá o processo de publicação de uma aplicação em Vue. Ou seja, nosso app está pronto e agora precisamos publicá-lo e deixá-lo disponível para o mundo ou para nossos usuários, dependendo de como é o seu cenário.
+[00:20] A primeira coisa que vou fazer é vir no terminal e parar o meu npm run serve que estava servindo a aplicação em tempo de desenvolvimento. Inclusive ele até vai começar a reclamar no console.
+
+[00:33] Isso quer dizer que ele não está conseguindo fazer o autoreload, aquela funcionalidade que quando alteramos um arquivo ele já entende e atualiza do lado do navegador. E agora vamos entender no nosso “package.json” como fazer para publicar, compilar tudo isso.
+
+[00:59] Temos três scripts. O primeiro, serve, é o que estamos usando desde o começo do curso, que vai levantar essa aplicação em tempo de desenvolvimento. E agora o que vamos utilizar é o build. Vamos fazer esse build e entender o que ele vai fazer para nós.
+
+[01:17] Vou voltar para o terminal. Se eu quero rodar um script eu vou no terminal e faço npm run seguido do que eu quero fazer, se é o serve ou o build. No nosso caso agora queremos fazer o build, queremos compilar a nossa aplicação.
+
+[01:35] Então vamos fazer o comando npm run build. Ele vai rodar e começar a entender tudo que fizemos e começar a compilar todos os nossos componentes.
+
+[01:45] Ele está avisando que está fazendo o build. Esse processo pode ser um pouco demorado. Quanto maior a aplicação mais tempo ele demora. Mas como a nossa está bem pequena ele já terminou.
+
+[01:59] Ele nos devolveu na pasta “dist” os arquivos JavaScript, um com nossas dependências e outro com nosso código. E o CSS é a mesma coisa, um com as nossas dependências e outro com nosso código.
+
+[02:14] Se repararmos agora na pasta “dist” veremos o “index.html” e veremos tudo minificado, porque ele está otimizado para a produção. Esse é o código que subiremos para a produção. E dependemos de ter agora um servidor web para servir este arquivo.
+
+[02:35] O que podemos fazer é no “index.html” usar uma lib em Node só para ver se isso está funcionando. Então vou entrar na minha pasta “dist”, vou instalar um pacote NPM global que vai me simular como se fosse um servidor HTTP.
+
+[02:55] Então vou colocar npm i -g http-server. Ele vai instalar globalmente. A primeira vez vai demorar um pouco mais, mas já instalou. Agora eu quero subir, eu quero prover esse arquivo HTML como se fosse um servidor. Então vou rodar agora http-server.
+
+[03:22] Ele vai rodar. Repara que ele subiu. Ele deu alguns logs, mas ele está ouvindo na porta 8080. Então vou mandar ele abrir para mim e ele nos leva para a nossa aplicação. Repara que agora não temos aquele hot reload, ele não vai ficar tentando comunicar para atualizar automaticamente, porque essa é nossa versão de produção.
+
+[03:49] Se começarmos a inspecionar os elementos e entender o que está funcionando por baixo dos panos, veremos que todo nosso código está bem enxuto, sem espaçamento, e está preparado para ser otimizado para o ambiente produtivo.
+
+[04:03] E ele vai economizar tudo que der, inclusive cada um dos espaços possíveis, vai minificar o CSS, o JavaScript, fazer todo o necessário.
+
+[04:14] Conforme criamos nosso projeto utilizando o CLI do Vue, ele já entregou tudo isso pronto, não precisamos configurar nada. Ele vai utilizar o Babel, o webpack tudo por baixo dos panos e vai compilar a nossa aplicação de uma forma que consigamos subir num servidor web.
+
+[04:32] Fizemos um teste local usando o pacote do NPM HTTP server que vai simular. Agora precisamos pensar num ambiente de verdade. Nós testamos, fizemos o build, vimos que tudo funciona. Mas agora precisamos deixar isso disponível para o mundo, na internet.
+
+[04:56] E como poderíamos fazer isso? Vamos pensar e veremos isso na próxima aula.
+
+@@04
+Analisando os scripts npm
+
+Vamos analisar a parte do package.json onde estão localizados os scripts NPM:
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  }COPIAR CÓDIGO
+Marque a alternativa correta, relacionada aos scripts acima:
+
+O npm run serve compila para o ambiente de produção, onde a aplicação ficará disponível através de um servidor web.
+ 
+Alternativa correta
+O npm run build compila a aplicação, e deixa pronta para ser publicada em produção. Já o npm run serve é utilizado em tempo de desenvolvimento, subindo um servidor local e disponibilizando por padrão no endereço http://localhost:8080/.
+ 
+Alternativa correta! Exatamente! Além disso, o comando npm run lint não foi utilizado durante nossas aulas, mas você pode conferir mais detalhes aqui.
+Alternativa correta
+Nenhum dos três comandos tem serventia para aplicações Vue, são opcionais.
+
+@@05
+Para saber mais: Subindo o projeto no Github
+
+Para seguirmos com a aula de publicação, precisamos subir o projeto no Github. Essa ferramenta é muito poderosa, e possui um curso só sobre ela. Não deixe de conferir! Além disso, tem um artigo bem bacana que pode te ajudar no que for necessário.
+
+https://cursos.alura.com.br/course/git-github-controle-de-versao
+
+https://www.alura.com.br/artigos/o-que-e-git-github?_gl=1*9ywfiz*_ga*MTgwMzIzMjk2Ni4xNjg4ODE5OTcz*_ga_1EPWSW3PCS*MTcwNzE3MDcxNC4xODYuMS4xNzA3MTc1NjI2LjAuMC4w*_fplc*ZXhzOW5pdmM3dWMzcFJ6M3YlMkZWJTJCdlJ3enZvY21OYTMlMkJRZXlTaEV0NFFFUWMlMkYyOFphbzRXNTUycWw1d1k1ZDJwQkhzVTglMkZESUpBV0cxdEgzS2hqSmlyMTFLR2xJNDJqQkJnUUolMkYlMkZqekk2OGF1a050NlZGODNlVjVSVnJtR0ElM0QlM0Q.
+
+@@06
+Publicando o app
+
+[00:00] Vamos agora partir para a publicação do nosso Alura Tracker. Depois de todo esse trabalho que tivemos para subir todas essas funcionalidades está na hora de colocar a nossa aplicação disponível para o mundo.
+[00:11] Existem várias formas diferentes de publicar isso. Vimos na aula anterior como fazer o build manual da aplicação, se quisermos subir num ambiente controlado ou alguma coisa do tipo.
+
+[00:23] Mas para publicarmos isso de forma gratuita e para lançarmos para o mundo e todos poderem utilizar a nossa versão do Alura Tracker, vamos utilizar a Vercel.
+
+[00:34] Você pode fazer login ou se cadastrar se você ainda não tiver uma conta. Eu vou fazer o login com a minha conta do GitHub, isso vai facilitar um pouco.
+
+[00:46] Ainda não temos nenhum projeto, então vou clicar em “New Project”. Ele já vai entender que estou usando minha conta do GitHub e terá acesso aos meus repositórios. E eu vou utilizar o “alura-tracker”.
+
+[01:01] Ele já pegou a branch principal. Eu não vou configurar um time, porque isso é para a versão paga e eu quero utilizar a versão gratuita por enquanto.
+
+[01:10] Vou deixar o nome do projeto como ele já está, “alura-tracker”. Ele já identificou que é um framework Vue, já viu que o meu projeto está no diretório raiz.
+
+[01:21] Eu vou só pedir para ele fazer direto o build. Tudo que fizemos ou faríamos manualmente, ele fará automaticamente. Então ele vai copiar o código fonte, vai fazer o build, antes de fazer o build ele vai baixar as dependências do projeto, então vai rodar um npm i para instalar tudo que está configurado como dependência no nosso “package.json”.
+
+[01:43] Depois que ele fizer isso, vai rodar o npm run build para fazer a preparação e a compilação do nosso código. Fizemos utilizando o TypeScript e utilizando arquivos “.vue” e isso o nosso navegador não entende.
+
+[01:58] Ele terá que transpilar, compilar e transformar tudo isso naqueles arquivos que vimos quando fizemos manualmente, um CSS de todas as dependências e um CSS gerado por nós; e a mesma coisa com JavaScript. Temos um JavaScript com todas as dependências do projeto e outro com o código que fizemos e geramos.
+
+[02:18] Então ele fará tudo isso, fará o build e vai publicar a aplicação, deixando-a disponível para conseguirmos acessar. Ele já está fazendo o upload, já fez o deploy. Vamos entrar na dashboard. Ele até me deu um preview.
+
+[02:36] E eu quero visitar e ver se está funcionando. Então vou clicar em “Visit” e ele já abre o “alura-tracker.vercel.app”, onde está disponível, funcionando com o nosso modo escuro, a nossa versão mais recente do projeto.
+
+[02:51] Então posso colocar uma atividade, como por exemplo, “Deploy da aplicação na Vercel”. Na hora em que eu clico em “Play” ele vai começar a calcular o tempo e ver quanto tempo levará.
+
+[03:04] E quando eu clicar em “Stop” ele vai descer a tarefa. Repara que ele já tirou o placeholder, então toda nossa funcionalidade, tudo que já desenvolvemos está disponível.
+
+[03:12] E agora que essa aplicação subiu e está pronta, você pode compartilhar com todo mundo, nos fóruns da Alura, no LinkedIn. Mostra para todo mundo que a sua primeira aplicação Vue está pronta, que todo mundo pode usar, e o usuário pode fazer a gestão das tarefas dele, lançar o que ele está fazendo e entender quanto tempo está levando cada atividade do dia dele.
+
+[03:37] Foi muito bom ter desenvolvido isso. Agora nosso app está disponível para o mundo. Todo mundo que quiser e que tiver uma conexão com a internet vai conseguir acessar e testar essa versão do Alura Tracker.
+
+@@07
+Faça como eu fiz
+
+Praticar ajuda bastante no aprendizado de um novo conceito. Assim, é muito importante que você implemente o que foi apresentado nesta aula.
+
+Não deixe de sanar suas dúvidas. Estaremos te esperando no fórum da Alura caso alguma dúvida surja.
+
+@@08
+O que aprendemos?
+
+Nessa aula, você aprendeu:
+Depurar a aplicação usando o Vue Devtools;
+Aprendemos a visualizar o estado de cada componente, o que nos ajuda a entender como as coisas estão funcionando por baixo dos panos.
+Gerar um build manual da aplicação;
+Aprendemos a rodar o script que faz a construção da nossa aplicação, assim podemos publicar manualmente em algum servidor web caso seja necessário.
+Publicar a aplicação no Vercel;
+Aprendemos a configurar o Vercel para integrar com o nosso github e publicar nossa aplicação de forma contínua!
+
+@@09
+Conclusão
+
+[00:00] Parabéns por ter concluído mais esse curso na Alura. Aprendemos no decorrer das aulas como trabalhar com Vue utilizando o TypeScript, lembrando que desta vez utilizamos o Vue 3.
+[00:13] Nós criamos os componentes mais simples, sem comportamento, até os componentes mais complexos que precisam gerenciar o estado, como nosso app que gerencia uma lista de tarefas, ou nosso formulário, que se comunica com o temporizador.
+
+[00:26] O temporizador, por sua vez, se comunica com o cronômetro e coloca o formato para nós. Nós trabalhamos no formato da data também. Utilizamos o emit para fazer com que os componentes filhos consigam se comunicar com os componentes pais. Ouvimos os cliques dos botões, ou seja, também ouvimos cliques nativos da nossa página.
+
+[00:51] Então utilizamos várias técnicas diferentes para desenvolver o Alura Tracker. Logo no final descobrimos que existem algumas ferramentas adicionais que podem facilitar o nosso dia a dia, como por exemplo o Vue Devtools.
+
+[01:06] Aprendemos a fazer um build manual na hora de finalizar a aplicação. E também aprendemos como pegar o projeto que está no GitHub e subir no Vercel e então poder publicar a aplicação.
+
+[01:20] Não deixe de compartilhar suas dúvidas e considerações nos fóruns da Alura. E depois que você publicar seu Alura Tracker compartilhe conosco, mostra como ficou a sua versão, se você alterou as cores. Será muito bacana ver o trabalho que você desenvolveu nesse curso.
